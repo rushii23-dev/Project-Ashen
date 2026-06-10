@@ -1,49 +1,75 @@
 import { useRef, useState, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
-const PLAYLIST = [
-  "https://storage.googleapis.com/ashen-cinematic-media-499011/Green_leaf_FV.mp4",
-  "https://storage.googleapis.com/ashen-cinematic-media-499011/main.webm"
+const SEQUENCE = [
+  { src: "https://storage.googleapis.com/ashen-cinematic-media-499011/main.webm", start: 21, end: 27 },
+  { src: "https://storage.googleapis.com/ashen-cinematic-media-499011/main.webm", start: 0, end: 15 }
 ];
 
 export default function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoIndex, setVideoIndex] = useState(0);
+  const [seqIndex, setSeqIndex] = useState(0);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 1.5;
+    const video = videoRef.current;
+    if (!video) return;
+
+    const currentSeq = SEQUENCE[seqIndex];
+
+    if (video.getAttribute('src') !== currentSeq.src) {
+      video.setAttribute('src', currentSeq.src);
+      video.load();
+    } else {
+      if (video.readyState >= 1) {
+        video.currentTime = currentSeq.start;
+        video.playbackRate = 0.8;
+        video.play().catch(console.error);
+      }
     }
-  }, [videoIndex]);
+  }, [seqIndex]);
+
+  const handleTimeUpdate = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const currentSeq = SEQUENCE[seqIndex];
+    if (currentSeq.end !== null && video.currentTime >= currentSeq.end) {
+      setSeqIndex((prev) => (prev + 1) % SEQUENCE.length);
+    }
+  };
 
   const handleEnded = () => {
-    setVideoIndex((prevIndex) => (prevIndex + 1) % PLAYLIST.length);
+    const currentSeq = SEQUENCE[seqIndex];
+    if (currentSeq.end === null) {
+      setSeqIndex((prev) => (prev + 1) % SEQUENCE.length);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const currentSeq = SEQUENCE[seqIndex];
+    video.currentTime = currentSeq.start;
+    video.playbackRate = 0.8;
+    video.play().catch(console.error);
   };
 
   return (
     <section className="relative w-full h-screen bg-[#000000] flex flex-col justify-end items-start pb-16 px-8 lg:px-16 overflow-hidden">
-      {/* 
-        Full-screen Background Video
-        Always silent, continuous playlist loop, 1.5x speed.
-      */}
-      <AnimatePresence mode="wait">
-        <motion.video
-          key={videoIndex}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          ref={videoRef}
-          src={PLAYLIST[videoIndex]}
-          className="absolute inset-0 w-full h-full object-cover z-0"
-          autoPlay={true}
-          muted={true}
-          playsInline
-          preload="metadata"
-          aria-hidden="true" 
-          onEnded={handleEnded}
-        />
-      </AnimatePresence>
+      <motion.video
+        initial={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+        transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+        ref={videoRef as any}
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+        onTimeUpdate={handleTimeUpdate}
+        onEnded={handleEnded}
+        onLoadedMetadata={handleLoadedMetadata}
+      />
 
       {/* 
         Typography Overlay

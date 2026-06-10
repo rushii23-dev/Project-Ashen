@@ -11,21 +11,21 @@ const textContainerVariant = {
 
 const textChildVariant = {
   hidden: { opacity: 0, filter: "blur(10px)" },
-  visible: { 
-    opacity: 1, 
-    filter: "blur(0px)", 
-    transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1] as const } 
+  visible: {
+    opacity: 1,
+    filter: "blur(0px)",
+    transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1] as const }
   }
 };
 
-function ScrollTextReveal({ 
-  text, 
-  className, 
+function ScrollTextReveal({
+  text,
+  className,
   as = "div"
-}: { 
-  text: string; 
-  className?: string; 
-  as?: keyof typeof motion | string; 
+}: {
+  text: string;
+  className?: string;
+  as?: keyof typeof motion | string;
 }) {
   const lines = text.split("\n");
   const MotionComponent = (motion as any)[as as string];
@@ -45,9 +45,9 @@ function ScrollTextReveal({
             {words.map((word, i) => {
               if (!word) return null;
               return (
-                <motion.span 
+                <motion.span
                   key={i}
-                  variants={textChildVariant} 
+                  variants={textChildVariant}
                   className="inline-block mr-[0.25em]"
                 >
                   {word}
@@ -83,6 +83,7 @@ const SHADOW_LAYERS = [
     description: 'The massive hidden emissions created during manufacturing, global shipping, logistics, and the vast digital cloud usage required to sustain modern services.',
     video: 'https://storage.googleapis.com/ashen-cinematic-media-499011/videoplayback.mp4#t=57',
     startTime: 57,
+    endTime: 68,
   }
 ];
 
@@ -94,14 +95,14 @@ export default function BreakdownSection() {
     setHoveredIndex(index);
     const video = videoRefs.current[index];
     if (video) {
-      video.play().catch(() => {});
+      video.play().catch(() => { });
     }
   };
 
   return (
     <section className="w-full bg-[#000000] flex flex-col py-[128px] relative z-10">
       <div className="w-full max-w-[1440px] mx-auto px-6">
-        
+
         {/* Header Typography */}
         <div className="flex flex-col mb-16">
           <ScrollTextReveal
@@ -120,7 +121,7 @@ export default function BreakdownSection() {
         <div className="flex flex-col lg:flex-row gap-4 h-[750px] lg:h-[600px] w-full" onMouseLeave={() => setHoveredIndex(0)}>
           {SHADOW_LAYERS.map((layer, index) => {
             const isActive = hoveredIndex === index;
-            
+
             return (
               <motion.div
                 key={layer.id}
@@ -134,7 +135,7 @@ export default function BreakdownSection() {
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               >
                 {/* Background Image */}
-                <motion.div 
+                <motion.div
                   className="absolute inset-0 w-full h-full"
                   animate={{
                     scale: isActive ? 1.05 : 1,
@@ -143,14 +144,22 @@ export default function BreakdownSection() {
                   }}
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 >
-                    <video 
-                      ref={(el) => { videoRefs.current[index] = el; }}
-                    src={layer.video} 
-                    className="w-full h-full object-cover" 
+                  <video
+                    ref={(el) => { videoRefs.current[index] = el; }}
+                    src={layer.video}
+                    className="w-full h-full object-cover"
                     autoPlay
                     loop
                     muted
                     playsInline
+                    onTimeUpdate={(e) => {
+                      const video = e.currentTarget;
+                      const layerEndTime = (layer as any).endTime;
+                      if (layerEndTime && video.currentTime >= layerEndTime) {
+                        video.currentTime = layer.startTime;
+                        video.play().catch(() => { });
+                      }
+                    }}
                   />
                   {/* Overlay Gradient for readability */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20" />
@@ -158,7 +167,7 @@ export default function BreakdownSection() {
 
                 {/* Content Container */}
                 <div className="relative z-10 flex flex-col h-full justify-end p-6 md:p-8 lg:p-10 pointer-events-none">
-                  
+
                   {/* Top Identifier */}
                   <div className="absolute top-6 left-6 md:top-8 md:left-8">
                     <span className="font-sans font-light text-[14px] text-white/50 tracking-widest">
@@ -175,7 +184,7 @@ export default function BreakdownSection() {
                     <h3 className={`font-serif text-[28px] md:text-[36px] lg:text-[42px] text-white leading-[1.1] mb-4 drop-shadow-md ${!isActive && 'lg:rotate-0'} transition-all duration-500`}>
                       {layer.title}
                     </h3>
-                    
+
                     <AnimatePresence initial={false}>
                       {isActive && (
                         <motion.div
