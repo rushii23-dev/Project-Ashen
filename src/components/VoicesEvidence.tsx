@@ -193,7 +193,7 @@ export default function VoicesEvidence() {
         {/* Column 1 (Left) */}
         <div className="flex flex-col gap-4 lg:gap-6">
           <VideoCard 
-            src="/CarbonFootprint.mp4" 
+            src="https://storage.googleapis.com/ashen-cinematic-media-499011/CarbonFootprint.mp4" 
             name="Sephra's Green Show" 
             title="Lead Climatologist" 
             objectPosition="object-[center_20%]"
@@ -213,7 +213,7 @@ export default function VoicesEvidence() {
             author="António Guterres, Secretary-General of the UN"
           />
           <VideoCard 
-            src="/CarbonFootprintGuide.mp4" 
+            src="https://storage.googleapis.com/ashen-cinematic-media-499011/CarbonFootprintGuide.mp4" 
             name="Parcham Classes" 
             title="Youtuber, 3.6 Million subscribers" 
           />

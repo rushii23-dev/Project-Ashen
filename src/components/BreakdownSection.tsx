@@ -67,21 +67,21 @@ const SHADOW_LAYERS = [
     id: '01',
     title: 'Direct Emissions',
     description: 'Everyday fuel combustion, gas connections, and immediate vehicle emissions that occur directly from sources that are owned or controlled by us.',
-    video: '/1st_card.mp4',
+    video: 'https://storage.googleapis.com/ashen-cinematic-media-499011/1st_card.mp4',
     startTime: 0,
   },
   {
     id: '02',
     title: 'Electricity & Power',
     description: 'Purchased electricity, heating, and grid cooling infrastructure used to power everyday life, representing our indirect impact on power generation.',
-    video: '/2nd_card.mp4',
+    video: 'https://storage.googleapis.com/ashen-cinematic-media-499011/2nd_card.mp4',
     startTime: 0,
   },
   {
     id: '03',
     title: 'The Embodied Shadow',
     description: 'The massive hidden emissions created during manufacturing, global shipping, logistics, and the vast digital cloud usage required to sustain modern services.',
-    video: '/videoplayback.mp4#t=57',
+    video: 'https://storage.googleapis.com/ashen-cinematic-media-499011/videoplayback.mp4#t=57',
     startTime: 57,
   }
 ];

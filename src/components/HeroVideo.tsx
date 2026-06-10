@@ -2,8 +2,8 @@ import { useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const PLAYLIST = [
-  "/Green_leaf_FV.mp4",
-  "/main.webm"
+  "https://storage.googleapis.com/ashen-cinematic-media-499011/Green_leaf_FV.mp4",
+  "https://storage.googleapis.com/ashen-cinematic-media-499011/main.webm"
 ];
 
 export default function HeroVideo() {
