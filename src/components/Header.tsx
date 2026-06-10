@@ -31,10 +31,6 @@ export default function Header() {
         {/* Left: The Brand */}
         <div className="flex-1 flex items-center">
           <a href="#" className="flex items-center gap-3 group">
-            {/* Minimalist Geometric Mark */}
-            <div className="w-[18px] h-[18px] rounded-full border-[1.5px] border-white/60 flex items-center justify-center group-hover:border-white transition-colors duration-500">
-              <div className="w-[6px] h-[6px] rounded-full bg-white group-hover:scale-[1.3] transition-transform duration-500 ease-[0.16,1,0.3,1]" />
-            </div>
             <span className="font-serif text-[24px] text-white tracking-tight leading-none block pt-1">
               Ashen.
             </span>
