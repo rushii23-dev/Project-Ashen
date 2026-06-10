@@ -17,6 +17,7 @@ const VideoCard = ({
 
   const handleFocusEnter = () => {
     if (videoRef.current) {
+      videoRef.current.currentTime = 0;
       videoRef.current.muted = false;
       // Ensure playback in case autoplay policies block it initially
       videoRef.current.play().catch(() => {});
