@@ -94,7 +94,11 @@ export default function BreakdownSection() {
     setHoveredIndex(index);
     const video = videoRefs.current[index];
     if (video) {
-      video.currentTime = SHADOW_LAYERS[index].startTime;
+      // Only restart the video for the 3rd card (which jumps to 57s).
+      // The 1st and 2nd cards will just seamlessly continue playing.
+      if (index === 2) {
+        video.currentTime = SHADOW_LAYERS[index].startTime;
+      }
       video.play().catch(() => {});
     }
   };
