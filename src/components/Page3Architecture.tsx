@@ -30,7 +30,7 @@ function ScrollTextReveal({
 }) {
   // Handle newlines by splitting text into lines first
   const lines = text.split("\n");
-  const MotionComponent = (motion as any)[as as string];
+  const MotionComponent = motion[as as keyof typeof motion] as React.ElementType;
 
   let wordIndexCounter = 0;
 

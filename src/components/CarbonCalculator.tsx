@@ -37,7 +37,7 @@ const textChildVariant = {
   }
 };
 
-function ScrollTextReveal({ 
+const ScrollTextReveal = React.memo(function ScrollTextReveal({ 
   text, 
   className, 
   as = "div"
@@ -47,7 +47,7 @@ function ScrollTextReveal({
   as?: keyof typeof motion | string; 
 }) {
   const lines = text.split("\n");
-  const MotionComponent = (motion as any)[as as string];
+  const MotionComponent = motion[as as keyof typeof motion] as React.ElementType;
 
   return (
     <MotionComponent
@@ -79,11 +79,11 @@ function ScrollTextReveal({
       })}
     </MotionComponent>
   );
-}
+});
 
 // --- Data Constants & Mathematical Engine imported from calculateShadow ---
 
-export default function CarbonCalculator() {
+export default React.memo(function CarbonCalculator() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selections, setSelections] = useState<{ [key: number]: Choice }>({});
 
@@ -252,4 +252,4 @@ export default function CarbonCalculator() {
       </div>
     </section>
   );
-}
+});

@@ -33,7 +33,7 @@ function ScrollTextReveal({
   wordsClassName?: string[]; 
 }) {
   const words = text.split(" ");
-  const MotionComponent = (motion as any)[as as string];
+  const MotionComponent = motion[as as keyof typeof motion] as React.ElementType;
 
   return (
     <MotionComponent

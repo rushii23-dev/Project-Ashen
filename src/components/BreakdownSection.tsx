@@ -18,7 +18,7 @@ const textChildVariant = {
   }
 };
 
-function ScrollTextReveal({
+const ScrollTextReveal = React.memo(function ScrollTextReveal({
   text,
   className,
   as = "div"
@@ -28,7 +28,7 @@ function ScrollTextReveal({
   as?: keyof typeof motion | string;
 }) {
   const lines = text.split("\n");
-  const MotionComponent = (motion as any)[as as string];
+  const MotionComponent = motion[as as keyof typeof motion] as React.ElementType;
 
   return (
     <MotionComponent
@@ -60,9 +60,9 @@ function ScrollTextReveal({
       })}
     </MotionComponent>
   );
-}
+});
 
-const SHADOW_LAYERS = [
+const SHADOW_LAYERS: { id: string; title: string; description: string; video: string; startTime: number; endTime?: number }[] = [
   {
     id: '01',
     title: 'Direct Emissions',
@@ -87,7 +87,7 @@ const SHADOW_LAYERS = [
   }
 ];
 
-export default function BreakdownSection() {
+export default React.memo(function BreakdownSection() {
   const [hoveredIndex, setHoveredIndex] = React.useState<number>(0);
   const videoRefs = React.useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -127,7 +127,15 @@ export default function BreakdownSection() {
                 key={layer.id}
                 onMouseEnter={() => handleCardInteraction(index)}
                 onClick={() => handleCardInteraction(index)}
-                className="relative overflow-hidden rounded-[20px] bg-[#111] border border-white/10 cursor-pointer flex flex-col min-h-[120px] lg:min-w-[140px]"
+                className="relative overflow-hidden rounded-[20px] bg-[#111] border border-white/10 cursor-pointer flex flex-col min-h-[120px] lg:min-w-[140px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCardInteraction(index);
+                  }
+                }}
                 initial={false}
                 animate={{
                   flex: isActive ? 5 : 1,
@@ -152,9 +160,10 @@ export default function BreakdownSection() {
                     loop
                     muted
                     playsInline
+                    aria-hidden="true"
                     onTimeUpdate={(e) => {
                       const video = e.currentTarget;
-                      const layerEndTime = (layer as any).endTime;
+                      const layerEndTime = layer.endTime;
                       if (layerEndTime && video.currentTime >= layerEndTime) {
                         video.currentTime = layer.startTime;
                         video.play().catch(() => { });
@@ -208,4 +217,4 @@ export default function BreakdownSection() {
       </div>
     </section>
   );
-}
+});

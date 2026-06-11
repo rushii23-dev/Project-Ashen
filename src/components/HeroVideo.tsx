@@ -1,12 +1,11 @@
-import { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const SEQUENCE = [
-  { src: "https://storage.googleapis.com/ashen-cinematic-media-499011/main.webm", start: 21, end: 27 },
   { src: "https://storage.googleapis.com/ashen-cinematic-media-499011/main.webm", start: 0, end: 15 }
 ];
 
-export default function HeroVideo() {
+export default React.memo(function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [seqIndex, setSeqIndex] = useState(0);
 
@@ -33,14 +32,27 @@ export default function HeroVideo() {
     if (!video) return;
     const currentSeq = SEQUENCE[seqIndex];
     if (currentSeq.end !== null && video.currentTime >= currentSeq.end) {
-      setSeqIndex((prev) => (prev + 1) % SEQUENCE.length);
+      if (SEQUENCE.length === 1) {
+        video.currentTime = currentSeq.start;
+        video.play().catch(console.error);
+      } else {
+        setSeqIndex((prev) => (prev + 1) % SEQUENCE.length);
+      }
     }
   };
 
   const handleEnded = () => {
     const currentSeq = SEQUENCE[seqIndex];
     if (currentSeq.end === null) {
-      setSeqIndex((prev) => (prev + 1) % SEQUENCE.length);
+      if (SEQUENCE.length === 1) {
+        const video = videoRef.current;
+        if (video) {
+          video.currentTime = currentSeq.start;
+          video.play().catch(console.error);
+        }
+      } else {
+        setSeqIndex((prev) => (prev + 1) % SEQUENCE.length);
+      }
     }
   };
 
@@ -59,7 +71,7 @@ export default function HeroVideo() {
         initial={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
         animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
         transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-        ref={videoRef as any}
+        ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover z-0"
         autoPlay
         muted
@@ -82,4 +94,4 @@ export default function HeroVideo() {
       </div>
     </section>
   );
-}
+});

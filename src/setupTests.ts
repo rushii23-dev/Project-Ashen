@@ -6,4 +6,4 @@ const mockIntersectionObserver = class {
   unobserve() {}
   disconnect() {}
 };
-globalThis.IntersectionObserver = mockIntersectionObserver as any;
+globalThis.IntersectionObserver = mockIntersectionObserver as unknown as typeof IntersectionObserver;
