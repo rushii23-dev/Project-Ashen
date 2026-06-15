@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
 const NAV_LINKS = [
@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { id: 'manifesto', label: 'Manifesto', href: '#manifesto' }
 ];
 
-export default function Header() {
+export default React.memo(function Header() {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const [aqi, setAqi] = useState(168);
 
@@ -22,6 +22,10 @@ export default function Header() {
       });
     }, 4200);
     return () => clearInterval(interval);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setHoveredLink(null);
   }, []);
 
   return (
@@ -40,7 +44,7 @@ export default function Header() {
         {/* Center: Magnetic Navigation (The Viral Interaction) */}
         <nav 
           className="hidden md:flex items-center gap-2" 
-          onMouseLeave={() => setHoveredLink(null)}
+          onMouseLeave={handleMouseLeave}
         >
           {NAV_LINKS.map((link) => (
             <a
@@ -84,4 +88,4 @@ export default function Header() {
       </div>
     </header>
   );
-}
+});

@@ -62,41 +62,32 @@ const ScrollTextReveal = React.memo(function ScrollTextReveal({
   );
 });
 
-const SHADOW_LAYERS: { id: string; title: string; description: string; video: string; startTime: number; endTime?: number }[] = [
+const SHADOW_LAYERS: { id: string; title: string; description: string; image: string }[] = [
   {
     id: '01',
     title: 'Direct Emissions',
     description: 'Everyday fuel combustion, gas connections, and immediate vehicle emissions that occur directly from sources that are owned or controlled by us.',
-    video: 'https://storage.googleapis.com/ashen-cinematic-media-499011/1st_card.mp4',
-    startTime: 0,
+    image: '/images/card1.jpg',
   },
   {
     id: '02',
     title: 'Electricity & Power',
     description: 'Purchased electricity, heating, and grid cooling infrastructure used to power everyday life, representing our indirect impact on power generation.',
-    video: 'https://storage.googleapis.com/ashen-cinematic-media-499011/2nd_card.mp4',
-    startTime: 0,
+    image: '/images/card2.jpg',
   },
   {
     id: '03',
     title: 'The Embodied Shadow',
     description: 'The massive hidden emissions created during manufacturing, global shipping, logistics, and the vast digital cloud usage required to sustain modern services.',
-    video: 'https://storage.googleapis.com/ashen-cinematic-media-499011/videoplayback.mp4#t=57',
-    startTime: 57,
-    endTime: 68,
+    image: '/images/card3.jpg',
   }
 ];
 
 export default React.memo(function BreakdownSection() {
   const [hoveredIndex, setHoveredIndex] = React.useState<number>(0);
-  const videoRefs = React.useRef<(HTMLVideoElement | null)[]>([]);
 
   const handleCardInteraction = (index: number) => {
     setHoveredIndex(index);
-    const video = videoRefs.current[index];
-    if (video) {
-      video.play().catch(() => { });
-    }
   };
 
   return (
@@ -123,19 +114,12 @@ export default React.memo(function BreakdownSection() {
             const isActive = hoveredIndex === index;
 
             return (
-              <motion.div
+              <motion.button
                 key={layer.id}
                 onMouseEnter={() => handleCardInteraction(index)}
                 onClick={() => handleCardInteraction(index)}
-                className="relative overflow-hidden rounded-[20px] bg-[#111] border border-white/10 cursor-pointer flex flex-col min-h-[120px] lg:min-w-[140px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleCardInteraction(index);
-                  }
-                }}
+                className="relative overflow-hidden rounded-[20px] bg-[#111] border border-white/10 cursor-pointer flex flex-col min-h-[120px] lg:min-w-[140px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-white text-left"
+                aria-expanded={isActive}
                 initial={false}
                 animate={{
                   flex: isActive ? 5 : 1,
@@ -152,23 +136,11 @@ export default React.memo(function BreakdownSection() {
                   }}
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <video
-                    ref={(el) => { videoRefs.current[index] = el; }}
-                    src={layer.video}
+                  <img
+                    src={layer.image}
                     className="w-full h-full object-cover"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
+                    alt=""
                     aria-hidden="true"
-                    onTimeUpdate={(e) => {
-                      const video = e.currentTarget;
-                      const layerEndTime = layer.endTime;
-                      if (layerEndTime && video.currentTime >= layerEndTime) {
-                        video.currentTime = layer.startTime;
-                        video.play().catch(() => { });
-                      }
-                    }}
                   />
                   {/* Overlay Gradient for readability */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20" />
@@ -210,7 +182,7 @@ export default React.memo(function BreakdownSection() {
                     </AnimatePresence>
                   </motion.div>
                 </div>
-              </motion.div>
+              </motion.button>
             );
           })}
         </div>

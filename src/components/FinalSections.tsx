@@ -40,20 +40,12 @@ function InteractiveCard({ card }: { card: typeof PREVENTION_CARDS[0] }) {
 
   return (
     <div className="relative w-full h-[380px]" style={{ perspective: '1000px' }}>
-      <motion.div
-        className="w-full h-full relative cursor-pointer"
+      <motion.button
+        className="w-full h-full relative cursor-pointer text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
         style={{ transformStyle: 'preserve-3d' }}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         onClick={() => setIsFlipped(!isFlipped)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            setIsFlipped(!isFlipped);
-          }
-        }}
-        tabIndex={0}
-        role="button"
         aria-pressed={isFlipped}
       >
         {/* FRONT FACE (The Problem) */}
@@ -115,7 +107,7 @@ function InteractiveCard({ card }: { card: typeof PREVENTION_CARDS[0] }) {
           </div>
         </div>
 
-      </motion.div>
+      </motion.button>
     </div>
   );
 }

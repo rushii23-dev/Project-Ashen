@@ -1,7 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
 import { STEPS_DATA, calculateShadow } from '../utils/calculateShadow';
 import type { Choice } from '../utils/calculateShadow';
+
+/**
+ * Delay before automatically advancing to the next step after user selection.
+ */
+const AUTO_ADVANCE_DELAY_MS = 400;
 
 // --- Animated Counter Component ---
 function Counter({ from, to }: { from: number, to: number }) {
@@ -87,22 +92,44 @@ export default React.memo(function CarbonCalculator() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selections, setSelections] = useState<{ [key: number]: Choice }>({});
 
-  const handleSelect = (choice: Choice) => {
+  /**
+   * Handles user selection for a given step and auto-advances.
+   */
+  const handleSelect = useCallback((choice: Choice) => {
     setSelections(prev => ({ ...prev, [currentStep]: choice }));
     
     // Auto-advance after a very short delay for friction-less interaction
     setTimeout(() => {
       setCurrentStep(prev => prev + 1);
-    }, 400);
-  };
+    }, AUTO_ADVANCE_DELAY_MS);
+  }, [currentStep]);
 
-  const handleRecalculate = () => {
+  /**
+   * Resets the calculator back to the first step.
+   */
+  const handleRecalculate = useCallback(() => {
     setSelections({});
     setCurrentStep(1);
-  };
+  }, []);
 
   // The Dynamic Calculation Logic
   const { totalTons, treesNeeded } = calculateShadow(selections);
+
+  const treeElements = useMemo(() => Array.from({ length: treesNeeded }).map((_, i) => (
+    <motion.div 
+      key={i}
+      variants={{
+        hidden: { scaleY: 0, opacity: 0 },
+        visible: { 
+          scaleY: 1, 
+          opacity: 1, 
+          transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } 
+        }
+      }}
+      className="w-[3px] h-[16px] bg-white rounded-full opacity-60"
+      style={{ transformOrigin: 'bottom' }}
+    />
+  )), [treesNeeded]);
 
   const currentStepData = STEPS_DATA.find(s => s.stepIndex === currentStep);
 
@@ -165,6 +192,7 @@ export default React.memo(function CarbonCalculator() {
                         }
                       }}
                       tabIndex={0}
+                      aria-pressed={isSelected}
                       className={`
                         w-full h-full rounded-[10px] bg-[#202020] border p-6 cursor-pointer text-left flex flex-col justify-end items-start min-h-[120px]
                         transition-colors duration-300 group
@@ -210,21 +238,7 @@ export default React.memo(function CarbonCalculator() {
                   }}
                   className="flex flex-wrap gap-2 max-w-[700px] mt-16 justify-center min-h-[100px]"
                 >
-                  {Array.from({ length: treesNeeded }).map((_, i) => (
-                    <motion.div 
-                      key={i}
-                      variants={{
-                        hidden: { scaleY: 0, opacity: 0 },
-                        visible: { 
-                          scaleY: 1, 
-                          opacity: 1, 
-                          transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } 
-                        }
-                      }}
-                      className="w-[3px] h-[16px] bg-white rounded-full opacity-60"
-                      style={{ transformOrigin: 'bottom' }}
-                    />
-                  ))}
+                  {treeElements}
                 </motion.div>
 
                 {/* The Resolution Text */}
