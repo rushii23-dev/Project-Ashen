@@ -30,7 +30,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  componentDidCatch(_error: Error, _errorInfo: ErrorInfo): void {
+  override componentDidCatch(_error: Error, _errorInfo: ErrorInfo): void {
     // In production, this would forward to a telemetry/logging service.
     // Intentionally silent to avoid leaking error details to the console.
   }
@@ -39,7 +39,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
     window.location.reload();
   };
 
-  render(): ReactNode {
+  override render(): ReactNode {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback;
@@ -54,6 +54,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
             An unexpected error occurred. Please reload the page to continue.
           </p>
           <button
+            type="button"
             onClick={this.handleReload}
             className="rounded-full border border-white/30 px-8 py-3 text-[14px] font-sans text-white hover:bg-white hover:text-black transition-colors duration-300"
           >

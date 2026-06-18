@@ -4,16 +4,38 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Calculate and offset your digital carbon footprint with Ashen. Discover the weight of the invisible." />
-    <meta name="keywords" content="carbon footprint, digital footprint, Ashen, environmental impact, sustainability" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Warm up the cross-origin media hosts early to shave the hero LCP -->
+    <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="dns-prefetch" href="https://storage.googleapis.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <meta
+      name="description"
+      content="Calculate and offset your digital carbon footprint with Ashen. Discover the weight of the invisible."
+    />
+    <meta
+      name="keywords"
+      content="carbon footprint, digital footprint, Ashen, environmental impact, sustainability"
+    />
     <meta name="theme-color" content="#000000" />
     <meta property="og:title" content="The weight of the invisible. | Ashen" />
-    <meta property="og:description" content="Calculate and offset your carbon footprint with Ashen." />
+    <meta
+      property="og:description"
+      content="Calculate and offset your carbon footprint with Ashen."
+    />
     <meta property="og:type" content="website" />
     <title>The weight of the invisible.</title>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="padding: 2rem; color: #fff; background: #000; font-family: sans-serif">
+        Ashen needs JavaScript to render its interactive carbon calculator. Please enable JavaScript
+        in your browser to measure your footprint.
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

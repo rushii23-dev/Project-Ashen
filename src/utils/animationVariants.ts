@@ -23,10 +23,10 @@ export const textContainerVariant: Variants = {
  * Fades in from a blurred state using the Ashen easing curve.
  */
 export const textChildVariant: Variants = {
-  hidden: { opacity: 0, filter: "blur(10px)" },
+  hidden: { opacity: 0, filter: 'blur(10px)' },
   visible: {
     opacity: 1,
-    filter: "blur(0px)",
+    filter: 'blur(0px)',
     transition: { duration: 1.4, ease: ASHEN_EASE as unknown as [number, number, number, number] },
   },
 };

@@ -6,12 +6,25 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
-    "audit:ci": "npm audit --audit-level=high",
+    "typecheck": "tsc -b",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
+    "audit:ci": "npm audit --audit-level=high",
+    "verify": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage && npm run audit:ci && npm run build",
     "prepare": "husky"
+  },
+  "engines": {
+    "node": ">=20.19",
+    "npm": ">=10"
+  },
+  "overrides": {
+    "undici": ">=7.28.0"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
@@ -30,6 +43,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "^4.1.8",
     "autoprefixer": "^10.5.0",
+    "axe-core": "^4.12.1",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
@@ -43,10 +57,16 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.8",
+    "vitest-axe": "^0.1.0"
   },
   "lint-staged": {
-    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
-    "*.{json,md,css}": ["prettier --write"]
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   }
 }

@@ -10,11 +10,11 @@ describe('FinalSections', () => {
 
   it('can flip cards via click and keyboard', () => {
     render(<FinalSections />);
-    const cards = screen.getAllByRole('button').filter(b => b.hasAttribute('aria-pressed'));
-    expect(cards.length).toBeGreaterThan(0);
-    
-    expect(cards[0]).toHaveAttribute('aria-pressed', 'false');
-    fireEvent.click(cards[0]);
-    expect(cards[0]).toHaveAttribute('aria-pressed', 'true');
+    const [firstCard] = screen.getAllByRole('button').filter((b) => b.hasAttribute('aria-pressed'));
+    if (!firstCard) throw new Error('expected at least one flip card');
+
+    expect(firstCard).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(firstCard);
+    expect(firstCard).toHaveAttribute('aria-pressed', 'true');
   });
 });

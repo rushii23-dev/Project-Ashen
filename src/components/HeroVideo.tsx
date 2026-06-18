@@ -9,7 +9,11 @@ interface VideoSequence {
 }
 
 const SEQUENCE: readonly VideoSequence[] = [
-  { src: "https://storage.googleapis.com/ashen-cinematic-media-499011/main.webm", start: 0, end: 15 }
+  {
+    src: 'https://storage.googleapis.com/ashen-cinematic-media-499011/main.webm',
+    start: 0,
+    end: 15,
+  },
 ];
 
 /**
@@ -17,7 +21,9 @@ const SEQUENCE: readonly VideoSequence[] = [
  * Autoplay is commonly blocked by browser policy — this is expected, not an error.
  */
 function safePlay(video: HTMLVideoElement): void {
-  video.play().catch(() => { /* autoplay blocked by browser policy — expected */ });
+  video.play().catch(() => {
+    /* autoplay blocked by browser policy — expected */
+  });
 }
 
 export default React.memo(function HeroVideo() {
@@ -29,6 +35,7 @@ export default React.memo(function HeroVideo() {
     if (!video) return;
 
     const currentSeq = SEQUENCE[seqIndex];
+    if (!currentSeq) return;
 
     if (video.getAttribute('src') !== currentSeq.src) {
       video.setAttribute('src', currentSeq.src);
@@ -46,6 +53,7 @@ export default React.memo(function HeroVideo() {
     const video = videoRef.current;
     if (!video) return;
     const currentSeq = SEQUENCE[seqIndex];
+    if (!currentSeq) return;
     if (currentSeq.end !== null && video.currentTime >= currentSeq.end) {
       if (SEQUENCE.length === 1) {
         video.currentTime = currentSeq.start;
@@ -58,6 +66,7 @@ export default React.memo(function HeroVideo() {
 
   const handleEnded = () => {
     const currentSeq = SEQUENCE[seqIndex];
+    if (!currentSeq) return;
     if (currentSeq.end === null) {
       if (SEQUENCE.length === 1) {
         const video = videoRef.current;
@@ -75,6 +84,7 @@ export default React.memo(function HeroVideo() {
     const video = videoRef.current;
     if (!video) return;
     const currentSeq = SEQUENCE[seqIndex];
+    if (!currentSeq) return;
     video.currentTime = currentSeq.start;
     video.playbackRate = HERO_PLAYBACK_RATE;
     safePlay(video);
@@ -83,8 +93,8 @@ export default React.memo(function HeroVideo() {
   return (
     <section className="relative w-full h-screen bg-[#000000] flex flex-col justify-end items-start pb-16 px-8 lg:px-16 overflow-hidden">
       <motion.video
-        initial={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
-        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+        initial={{ opacity: 0, scale: 1.05, filter: 'blur(10px)' }}
+        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
         transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover z-0"

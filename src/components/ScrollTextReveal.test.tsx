@@ -11,19 +11,14 @@ describe('ScrollTextReveal', () => {
   });
 
   it('handles newlines by splitting into separate lines', () => {
-    render(<ScrollTextReveal text={"Line one\nLine two"} as="p" />);
+    render(<ScrollTextReveal text={'Line one\nLine two'} as="p" />);
     expect(screen.getAllByText('Line')).toHaveLength(2);
     expect(screen.getByText('one')).toBeInTheDocument();
     expect(screen.getByText('two')).toBeInTheDocument();
   });
 
   it('applies per-word classNames via wordsClassName prop', () => {
-    render(
-      <ScrollTextReveal 
-        text="styled word here" 
-        wordsClassName={["", "italic", ""]} 
-      />
-    );
+    render(<ScrollTextReveal text="styled word here" wordsClassName={['', 'italic', '']} />);
     const styledWord = screen.getByText('word');
     expect(styledWord.className).toContain('italic');
   });

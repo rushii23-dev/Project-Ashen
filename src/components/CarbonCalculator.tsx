@@ -1,6 +1,4 @@
-
-
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
 import { STEPS_DATA, calculateShadow } from '../utils/calculateShadow';
 import type { Choice } from '../utils/calculateShadow';
@@ -24,7 +22,7 @@ function Counter({ from, to }: CounterProps) {
     const controls = animate(count, to, {
       duration: 2,
       ease: [0.16, 1, 0.3, 1],
-      delay: 0.5
+      delay: 0.5,
     });
     return controls.stop;
   }, [count, to]);
@@ -36,65 +34,90 @@ export default React.memo(function CarbonCalculator() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selections, setSelections] = useState<{ [key: number]: Choice }>({});
 
+  // Tracks the pending auto-advance timer so it can always be cancelled,
+  // preventing a step change from firing after unmount or a reset.
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clear any pending auto-advance timer when the component unmounts.
+  useEffect(
+    () => () => {
+      if (advanceTimer.current !== null) clearTimeout(advanceTimer.current);
+    },
+    [],
+  );
+
   /**
    * Handles user selection for a given step and auto-advances.
    */
-  const handleSelect = useCallback((choice: Choice) => {
-    setSelections(prev => ({ ...prev, [currentStep]: choice }));
+  const handleSelect = useCallback(
+    (choice: Choice) => {
+      setSelections((prev) => ({ ...prev, [currentStep]: choice }));
 
-    // Auto-advance after a very short delay for friction-less interaction
-    setTimeout(() => {
-      setCurrentStep(prev => prev + 1);
-    }, AUTO_ADVANCE_DELAY_MS);
-  }, [currentStep]);
+      // Auto-advance after a very short delay for friction-less interaction.
+      // Any previously scheduled advance is cancelled first to avoid double-steps.
+      if (advanceTimer.current !== null) clearTimeout(advanceTimer.current);
+      advanceTimer.current = setTimeout(() => {
+        advanceTimer.current = null;
+        setCurrentStep((prev) => prev + 1);
+      }, AUTO_ADVANCE_DELAY_MS);
+    },
+    [currentStep],
+  );
 
   /**
    * Resets the calculator back to the first step.
    */
   const handleRecalculate = useCallback(() => {
+    if (advanceTimer.current !== null) {
+      clearTimeout(advanceTimer.current);
+      advanceTimer.current = null;
+    }
     setSelections({});
     setCurrentStep(1);
   }, []);
 
   // Memoised calculation — only recomputes when selections actually change
-  const { totalTons, treesNeeded } = useMemo(
-    () => calculateShadow(selections),
-    [selections]
-  );
+  const { totalTons, treesNeeded } = useMemo(() => calculateShadow(selections), [selections]);
 
   // Memoised current step data lookup
   const currentStepData = useMemo(
-    () => STEPS_DATA.find(s => s.stepIndex === currentStep),
-    [currentStep]
+    () => STEPS_DATA.find((s) => s.stepIndex === currentStep),
+    [currentStep],
   );
 
-  const treeElements = useMemo(() => Array.from({ length: treesNeeded }).map((_, i) => (
-    <motion.div
-      key={i}
-      variants={{
-        hidden: { scaleY: 0, opacity: 0 },
-        visible: {
-          scaleY: 1,
-          opacity: 1,
-          transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] }
-        }
-      }}
-      className="w-[3px] h-[16px] bg-white rounded-full opacity-60"
-      style={{ transformOrigin: 'bottom' }}
-    />
-  )), [treesNeeded]);
+  const treeElements = useMemo(
+    () =>
+      Array.from({ length: treesNeeded }).map((_, i) => (
+        <motion.div
+          key={i}
+          variants={{
+            hidden: { scaleY: 0, opacity: 0 },
+            visible: {
+              scaleY: 1,
+              opacity: 1,
+              transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
+            },
+          }}
+          className="w-[3px] h-[16px] bg-white rounded-full opacity-60"
+          style={{ transformOrigin: 'bottom' }}
+        />
+      )),
+    [treesNeeded],
+  );
 
   return (
-    <section id="carbon-calculator" className="w-full min-h-[80vh] bg-[#000000] flex flex-col items-center py-[128px] px-6 relative overflow-hidden">
+    <section
+      id="carbon-calculator"
+      className="w-full min-h-[80vh] bg-[#000000] flex flex-col items-center py-[128px] px-6 relative overflow-hidden"
+    >
       <div className="w-full max-w-[1000px] mx-auto relative flex flex-col justify-center min-h-[400px]">
-
         <AnimatePresence mode="wait">
           {currentStep <= 3 && currentStepData ? (
             <motion.div
               key={`step-${currentStep}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20, filter: "blur(5px)" }}
+              exit={{ opacity: 0, y: -20, filter: 'blur(5px)' }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-col w-full"
             >
@@ -134,25 +157,23 @@ export default React.memo(function CarbonCalculator() {
                       key={choice.label}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ duration: 0.6, delay: 0.2 + (i * 0.1), ease: "easeInOut" }}
+                      transition={{ duration: 0.6, delay: 0.2 + i * 0.1, ease: 'easeInOut' }}
+                      type="button"
                       onClick={() => handleSelect(choice)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          handleSelect(choice);
-                        }
-                      }}
-                      tabIndex={0}
                       aria-pressed={isSelected}
                       className={`
                         w-full h-full rounded-[10px] bg-[#202020] border p-6 cursor-pointer text-left flex flex-col justify-end items-start min-h-[120px]
                         transition-colors duration-300 group
-                        ${isSelected
-                          ? 'border-white bg-white text-black'
-                          : 'border-[#333333] hover:bg-white hover:text-black hover:border-white text-white'}
+                        ${
+                          isSelected
+                            ? 'border-white bg-white text-black'
+                            : 'border-[#333333] hover:bg-white hover:text-black hover:border-white text-white'
+                        }
                       `}
                     >
-                      <span className={`font-sans text-[18px] font-medium leading-[1.4] transition-colors duration-300 ${isSelected ? 'text-black' : 'text-white group-hover:text-black'}`}>
+                      <span
+                        className={`font-sans text-[18px] font-medium leading-[1.4] transition-colors duration-300 ${isSelected ? 'text-black' : 'text-white group-hover:text-black'}`}
+                      >
                         {choice.label}
                       </span>
                     </motion.button>
@@ -164,8 +185,8 @@ export default React.memo(function CarbonCalculator() {
             /* Result Payoff Screen */
             <motion.div
               key="result-payoff"
-              initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-col items-center justify-center min-h-[400px]"
               aria-live="polite"
@@ -185,7 +206,7 @@ export default React.memo(function CarbonCalculator() {
                 animate="visible"
                 variants={{
                   hidden: {},
-                  visible: { transition: { staggerChildren: 0.015, delayChildren: 1.0 } }
+                  visible: { transition: { staggerChildren: 0.015, delayChildren: 1.0 } },
                 }}
                 className="flex flex-wrap gap-2 max-w-[700px] mt-16 justify-center min-h-[100px]"
               >
@@ -204,6 +225,7 @@ export default React.memo(function CarbonCalculator() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 2.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  type="button"
                   onClick={handleRecalculate}
                   aria-label="Recalculate your carbon footprint"
                   className="mt-12 rounded-full border border-white/30 px-8 py-3 text-[14px] font-sans text-white hover:bg-white hover:text-black transition-colors duration-300"
@@ -214,7 +236,6 @@ export default React.memo(function CarbonCalculator() {
             </motion.div>
           )}
         </AnimatePresence>
-
       </div>
     </section>
   );

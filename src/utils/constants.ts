@@ -77,3 +77,12 @@ export const HERO_PLAYBACK_RATE = 0.8;
  * before transitioning.
  */
 export const AUTO_ADVANCE_DELAY_MS = 400;
+
+// ─── Hash Router ────────────────────────────────────────────────────────────
+
+/**
+ * Delay in milliseconds before scrolling to a same-page anchor after a hash
+ * change. Gives lazily-loaded sections a brief moment to mount so the target
+ * element exists before we attempt to scroll to it.
+ */
+export const ANCHOR_SCROLL_DELAY_MS = 100;

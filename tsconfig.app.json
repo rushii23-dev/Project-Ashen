@@ -8,6 +8,12 @@
     "skipLibCheck": true,
     "strict": true,
     "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUncheckedSideEffectImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowUnreachableCode": false,
 
     /* Bundler mode */
     "moduleResolution": "bundler",

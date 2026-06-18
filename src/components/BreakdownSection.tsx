@@ -13,21 +13,24 @@ const SHADOW_LAYERS: readonly ShadowLayer[] = [
   {
     id: '01',
     title: 'Direct Emissions',
-    description: 'Everyday fuel combustion, gas connections, and immediate vehicle emissions that occur directly from sources that are owned or controlled by us.',
+    description:
+      'Everyday fuel combustion, gas connections, and immediate vehicle emissions that occur directly from sources that are owned or controlled by us.',
     image: '/images/card1.jpg',
   },
   {
     id: '02',
     title: 'Electricity & Power',
-    description: 'Purchased electricity, heating, and grid cooling infrastructure used to power everyday life, representing our indirect impact on power generation.',
+    description:
+      'Purchased electricity, heating, and grid cooling infrastructure used to power everyday life, representing our indirect impact on power generation.',
     image: '/images/card2.jpg',
   },
   {
     id: '03',
     title: 'The Embodied Shadow',
-    description: 'The massive hidden emissions created during manufacturing, global shipping, logistics, and the vast digital cloud usage required to sustain modern services.',
+    description:
+      'The massive hidden emissions created during manufacturing, global shipping, logistics, and the vast digital cloud usage required to sustain modern services.',
     image: '/images/card3.jpg',
-  }
+  },
 ];
 
 export default React.memo(function BreakdownSection() {
@@ -40,7 +43,6 @@ export default React.memo(function BreakdownSection() {
   return (
     <section className="w-full bg-[#000000] flex flex-col py-[128px] relative z-10">
       <div className="w-full max-w-[1440px] mx-auto px-6">
-
         {/* Header Typography */}
         <div className="flex flex-col mb-16">
           <ScrollTextReveal
@@ -56,7 +58,10 @@ export default React.memo(function BreakdownSection() {
         </div>
 
         {/* The Expanding Grid */}
-        <div className="flex flex-col lg:flex-row gap-4 h-[750px] lg:h-[600px] w-full" onMouseLeave={() => setHoveredIndex(0)}>
+        <div
+          className="flex flex-col lg:flex-row gap-4 h-[750px] lg:h-[600px] w-full"
+          onMouseLeave={() => setHoveredIndex(0)}
+        >
           {SHADOW_LAYERS.map((layer, index) => {
             const isActive = hoveredIndex === index;
 
@@ -80,7 +85,7 @@ export default React.memo(function BreakdownSection() {
                   animate={{
                     scale: isActive ? 1.05 : 1,
                     opacity: isActive ? 0.8 : 0.3,
-                    filter: isActive ? "blur(0px) grayscale(20%)" : "blur(4px) grayscale(100%)"
+                    filter: isActive ? 'blur(0px) grayscale(20%)' : 'blur(4px) grayscale(100%)',
                   }}
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 >
@@ -98,7 +103,6 @@ export default React.memo(function BreakdownSection() {
 
                 {/* Content Container */}
                 <div className="relative z-10 flex flex-col h-full justify-end p-6 md:p-8 lg:p-10 pointer-events-none">
-
                   {/* Top Identifier */}
                   <div className="absolute top-6 left-6 md:top-8 md:left-8">
                     <span className="font-sans font-light text-[14px] text-white/50 tracking-widest">
@@ -112,17 +116,23 @@ export default React.memo(function BreakdownSection() {
                     animate={{ y: isActive ? 0 : 10 }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    <h3 className={`font-serif text-[28px] md:text-[36px] lg:text-[42px] text-white leading-[1.1] mb-4 drop-shadow-md ${!isActive && 'lg:rotate-0'} transition-all duration-500`}>
+                    <h3
+                      className={`font-serif text-[28px] md:text-[36px] lg:text-[42px] text-white leading-[1.1] mb-4 drop-shadow-md ${!isActive && 'lg:rotate-0'} transition-all duration-500`}
+                    >
                       {layer.title}
                     </h3>
 
                     <AnimatePresence initial={false}>
                       {isActive && (
                         <motion.div
-                          initial={{ opacity: 0, height: 0, filter: "blur(10px)" }}
-                          animate={{ opacity: 1, height: "auto", filter: "blur(0px)" }}
-                          exit={{ opacity: 0, height: 0, filter: "blur(10px)" }}
-                          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], opacity: { duration: 0.4 } }}
+                          initial={{ opacity: 0, height: 0, filter: 'blur(10px)' }}
+                          animate={{ opacity: 1, height: 'auto', filter: 'blur(0px)' }}
+                          exit={{ opacity: 0, height: 0, filter: 'blur(10px)' }}
+                          transition={{
+                            duration: 0.6,
+                            ease: [0.16, 1, 0.3, 1],
+                            opacity: { duration: 0.4 },
+                          }}
                         >
                           <p className="font-sans text-[16px] md:text-[18px] text-[#e0e0e0] font-light leading-[1.6] max-w-[500px] drop-shadow-sm">
                             {layer.description}

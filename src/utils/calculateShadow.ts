@@ -15,29 +15,29 @@ export interface StepData {
 export const STEPS_DATA: readonly StepData[] = Object.freeze([
   Object.freeze({
     stepIndex: 1,
-    question: "How do you usually travel every day?",
+    question: 'How do you usually travel every day?',
     choices: Object.freeze([
-      Object.freeze({ label: "Walk or Bicycle", value: 0.1 }),
-      Object.freeze({ label: "Bus or Train", value: 1.2 }),
-      Object.freeze({ label: "Personal Car or Bike", value: 3.5 }),
+      Object.freeze({ label: 'Walk or Bicycle', value: 0.1 }),
+      Object.freeze({ label: 'Bus or Train', value: 1.2 }),
+      Object.freeze({ label: 'Personal Car or Bike', value: 3.5 }),
     ]) as readonly Choice[],
   }),
   Object.freeze({
     stepIndex: 2,
-    question: "What does your daily food look like?",
+    question: 'What does your daily food look like?',
     choices: Object.freeze([
-      Object.freeze({ label: "Mostly Plants & Veggies", value: 1.5 }),
-      Object.freeze({ label: "Mix of Meat & Veggies", value: 2.5 }),
-      Object.freeze({ label: "Meat Every Day", value: 3.3 }),
+      Object.freeze({ label: 'Mostly Plants & Veggies', value: 1.5 }),
+      Object.freeze({ label: 'Mix of Meat & Veggies', value: 2.5 }),
+      Object.freeze({ label: 'Meat Every Day', value: 3.3 }),
     ]) as readonly Choice[],
   }),
   Object.freeze({
     stepIndex: 3,
-    question: "How often do you buy new clothes or gadgets?",
+    question: 'How often do you buy new clothes or gadgets?',
     choices: Object.freeze([
-      Object.freeze({ label: "Rarely. I use things until they break.", value: 0.5 }),
-      Object.freeze({ label: "Sometimes. A few times a year.", value: 1.5 }),
-      Object.freeze({ label: "Often. I like buying new trends.", value: 3.2 }),
+      Object.freeze({ label: 'Rarely. I use things until they break.', value: 0.5 }),
+      Object.freeze({ label: 'Sometimes. A few times a year.', value: 1.5 }),
+      Object.freeze({ label: 'Often. I like buying new trends.', value: 3.2 }),
     ]) as readonly Choice[],
   }),
 ]) as readonly StepData[];

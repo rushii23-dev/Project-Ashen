@@ -17,7 +17,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary>
         <div>Safe content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     expect(screen.getByText('Safe content')).toBeInTheDocument();
   });
@@ -26,7 +26,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary>
         <ThrowingComponent />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     expect(screen.getByText('Something broke.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /reload/i })).toBeInTheDocument();
@@ -36,7 +36,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary fallback={<div>Custom fallback</div>}>
         <ThrowingComponent />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     expect(screen.getByText('Custom fallback')).toBeInTheDocument();
   });
@@ -51,7 +51,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary>
         <ThrowingComponent />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     fireEvent.click(screen.getByRole('button', { name: /reload/i }));

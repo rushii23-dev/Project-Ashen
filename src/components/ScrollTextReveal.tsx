@@ -34,11 +34,11 @@ export interface ScrollTextRevealProps {
 export default React.memo(function ScrollTextReveal({
   text,
   className,
-  as = "div",
+  as = 'div',
   wordsClassName = [],
   once = false,
 }: ScrollTextRevealProps) {
-  const lines = text.split("\n");
+  const lines = text.split('\n');
   const MotionComponent = motion[as as keyof typeof motion] as React.ElementType;
 
   let wordIndexCounter = 0;
@@ -47,7 +47,7 @@ export default React.memo(function ScrollTextReveal({
     <MotionComponent
       initial="hidden"
       whileInView="visible"
-      viewport={{ once, margin: "-10%" }}
+      viewport={{ once, margin: '-10%' }}
       variants={textContainerVariant}
       className={className}
     >
@@ -62,7 +62,7 @@ export default React.memo(function ScrollTextReveal({
                 <motion.span
                   key={i}
                   variants={textChildVariant}
-                  className={`inline-block mr-[0.25em] ${wordsClassName[currentIndex] ?? ""}`}
+                  className={`inline-block mr-[0.25em] ${wordsClassName[currentIndex] ?? ''}`}
                 >
                   {word}
                 </motion.span>

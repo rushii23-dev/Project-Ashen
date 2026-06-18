@@ -14,9 +14,10 @@ export function smoothScrollTo(targetId: string, duration: number = 1500) {
   if (!targetElement) return;
 
   const targetRect = targetElement.getBoundingClientRect();
-  
+
   // Calculate the exact target Y position to align the element perfectly in the center of the viewport
-  const targetPosition = targetRect.top + window.scrollY - (window.innerHeight / 2) + (targetRect.height / 2);
+  const targetPosition =
+    targetRect.top + window.scrollY - window.innerHeight / 2 + targetRect.height / 2;
   const startPosition = window.scrollY;
   const distance = targetPosition - startPosition;
   let startTime: number | null = null;
@@ -25,13 +26,13 @@ export function smoothScrollTo(targetId: string, duration: number = 1500) {
   function animation(currentTime: number) {
     if (startTime === null) startTime = currentTime;
     const timeElapsed = currentTime - startTime;
-    
+
     // Cap progress at 1 to prevent overshooting
     const progress = Math.min(timeElapsed / duration, 1);
 
     // Apply the mathematical easing
     const easing = easeInOutCubic(progress);
-    
+
     // Apply strict translation
     window.scrollTo(0, startPosition + distance * easing);
 
