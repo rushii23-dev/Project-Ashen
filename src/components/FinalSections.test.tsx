@@ -1,16 +1,6 @@
-
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import FinalSections from './FinalSections';
-
-beforeAll(() => {
-  window.IntersectionObserver = class IntersectionObserver {
-    constructor() {}
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  } as unknown as typeof IntersectionObserver;
-});
 
 describe('FinalSections', () => {
   it('renders the header correctly', () => {
@@ -20,8 +10,6 @@ describe('FinalSections', () => {
 
   it('can flip cards via click and keyboard', () => {
     render(<FinalSections />);
-    // Select the first card button (from the InteractiveCard component)
-    // The footer might also have a button. InteractiveCard buttons have aria-pressed.
     const cards = screen.getAllByRole('button').filter(b => b.hasAttribute('aria-pressed'));
     expect(cards.length).toBeGreaterThan(0);
     

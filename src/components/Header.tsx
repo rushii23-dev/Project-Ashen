@@ -1,7 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import {
+  INITIAL_AQI,
+  MAX_AQI,
+  MIN_AQI,
+  AQI_UPDATE_INTERVAL_MS,
+  AQI_FLUCTUATION_RANGE,
+  AQI_FLUCTUATION_OFFSET,
+} from '../utils/constants';
 
-const NAV_LINKS = [
+interface NavLink {
+  id: string;
+  label: string;
+  href: string;
+}
+
+const NAV_LINKS: readonly NavLink[] = [
   { id: 'home', label: 'Home', href: '#' },
   { id: 'invisible', label: 'The Invisible', href: '#the-invisible' },
   { id: 'calculator', label: 'Calculator', href: '#carbon-calculator' },
@@ -10,17 +24,16 @@ const NAV_LINKS = [
 
 export default React.memo(function Header() {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-  const [aqi, setAqi] = useState(168);
+  const [aqi, setAqi] = useState(INITIAL_AQI);
 
   // Simulate a live telemetry feed for India AQI
   useEffect(() => {
     const interval = setInterval(() => {
       setAqi(prev => {
-        // Fluctuate by -2, -1, 0, 1, or 2 to make it feel alive
-        const change = Math.floor(Math.random() * 5) - 2;
-        return Math.max(0, Math.min(500, prev + change));
+        const change = Math.floor(Math.random() * AQI_FLUCTUATION_RANGE) - AQI_FLUCTUATION_OFFSET;
+        return Math.max(MIN_AQI, Math.min(MAX_AQI, prev + change));
       });
-    }, 4200);
+    }, AQI_UPDATE_INTERVAL_MS);
     return () => clearInterval(interval);
   }, []);
 
@@ -34,16 +47,17 @@ export default React.memo(function Header() {
         
         {/* Left: The Brand */}
         <div className="flex-1 flex items-center">
-          <a href="#" className="flex items-center gap-3 group">
+          <a href="#" className="flex items-center gap-3 group" aria-label="Ashen — home">
             <span className="font-serif text-[24px] text-white tracking-tight leading-none block pt-1">
               Ashen.
             </span>
           </a>
         </div>
 
-        {/* Center: Magnetic Navigation (The Viral Interaction) */}
+        {/* Center: Magnetic Navigation */}
         <nav 
-          className="hidden md:flex items-center gap-2" 
+          className="hidden md:flex items-center gap-2"
+          aria-label="Primary navigation"
           onMouseLeave={handleMouseLeave}
         >
           {NAV_LINKS.map((link) => (
@@ -71,13 +85,14 @@ export default React.memo(function Header() {
           ))}
         </nav>
 
-        {/* Right: The Live Metric (Replacing the Button) */}
+        {/* Right: The Live Metric */}
         <div className="flex-1 flex justify-end">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3" aria-live="polite" aria-atomic="true">
             <motion.div 
               animate={{ opacity: [0.3, 1, 0.3] }} 
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="w-[6px] h-[6px] bg-white rounded-full"
+              aria-hidden="true"
             />
             <span className="font-sans text-[12px] uppercase tracking-[0.1em] text-[#999999] tabular-nums">
               INDIA AQI: {aqi}

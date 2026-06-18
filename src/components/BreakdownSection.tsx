@@ -1,68 +1,15 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ScrollTextReveal from './ScrollTextReveal';
 
-// --- ScrollTextReveal Component (Kinetic Animation Logic) ---
-const textContainerVariant = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.12 }
-  }
-};
+interface ShadowLayer {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+}
 
-const textChildVariant = {
-  hidden: { opacity: 0, filter: "blur(10px)" },
-  visible: {
-    opacity: 1,
-    filter: "blur(0px)",
-    transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1] as const }
-  }
-};
-
-const ScrollTextReveal = React.memo(function ScrollTextReveal({
-  text,
-  className,
-  as = "div"
-}: {
-  text: string;
-  className?: string;
-  as?: keyof typeof motion | string;
-}) {
-  const lines = text.split("\n");
-  const MotionComponent = motion[as as keyof typeof motion] as React.ElementType;
-
-  return (
-    <MotionComponent
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, margin: "-10%" }}
-      variants={textContainerVariant}
-      className={className}
-    >
-      {lines.map((line, lineIndex) => {
-        const words = line.trim().split(/\s+/);
-        return (
-          <React.Fragment key={lineIndex}>
-            {words.map((word, i) => {
-              if (!word) return null;
-              return (
-                <motion.span
-                  key={i}
-                  variants={textChildVariant}
-                  className="inline-block mr-[0.25em]"
-                >
-                  {word}
-                </motion.span>
-              );
-            })}
-            {lineIndex < lines.length - 1 && <br />}
-          </React.Fragment>
-        );
-      })}
-    </MotionComponent>
-  );
-});
-
-const SHADOW_LAYERS: { id: string; title: string; description: string; image: string }[] = [
+const SHADOW_LAYERS: readonly ShadowLayer[] = [
   {
     id: '01',
     title: 'Direct Emissions',
@@ -120,6 +67,7 @@ export default React.memo(function BreakdownSection() {
                 onClick={() => handleCardInteraction(index)}
                 className="relative overflow-hidden rounded-[20px] bg-[#111] border border-white/10 cursor-pointer flex flex-col min-h-[120px] lg:min-w-[140px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-white text-left"
                 aria-expanded={isActive}
+                aria-label={`${layer.title} — ${isActive ? 'expanded' : 'collapsed'}`}
                 initial={false}
                 animate={{
                   flex: isActive ? 5 : 1,
@@ -141,6 +89,8 @@ export default React.memo(function BreakdownSection() {
                     className="w-full h-full object-cover"
                     alt=""
                     aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
                   />
                   {/* Overlay Gradient for readability */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20" />

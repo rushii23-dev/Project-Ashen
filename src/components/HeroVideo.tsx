@@ -1,9 +1,24 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { HERO_PLAYBACK_RATE } from '../utils/constants';
 
-const SEQUENCE = [
+interface VideoSequence {
+  src: string;
+  start: number;
+  end: number | null;
+}
+
+const SEQUENCE: readonly VideoSequence[] = [
   { src: "https://storage.googleapis.com/ashen-cinematic-media-499011/main.webm", start: 0, end: 15 }
 ];
+
+/**
+ * Silently catches video play() promise rejections.
+ * Autoplay is commonly blocked by browser policy — this is expected, not an error.
+ */
+function safePlay(video: HTMLVideoElement): void {
+  video.play().catch(() => { /* autoplay blocked by browser policy — expected */ });
+}
 
 export default React.memo(function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -21,8 +36,8 @@ export default React.memo(function HeroVideo() {
     } else {
       if (video.readyState >= 1) {
         video.currentTime = currentSeq.start;
-        video.playbackRate = 0.8;
-        video.play().catch(console.error);
+        video.playbackRate = HERO_PLAYBACK_RATE;
+        safePlay(video);
       }
     }
   }, [seqIndex]);
@@ -34,7 +49,7 @@ export default React.memo(function HeroVideo() {
     if (currentSeq.end !== null && video.currentTime >= currentSeq.end) {
       if (SEQUENCE.length === 1) {
         video.currentTime = currentSeq.start;
-        video.play().catch(console.error);
+        safePlay(video);
       } else {
         setSeqIndex((prev) => (prev + 1) % SEQUENCE.length);
       }
@@ -48,7 +63,7 @@ export default React.memo(function HeroVideo() {
         const video = videoRef.current;
         if (video) {
           video.currentTime = currentSeq.start;
-          video.play().catch(console.error);
+          safePlay(video);
         }
       } else {
         setSeqIndex((prev) => (prev + 1) % SEQUENCE.length);
@@ -61,8 +76,8 @@ export default React.memo(function HeroVideo() {
     if (!video) return;
     const currentSeq = SEQUENCE[seqIndex];
     video.currentTime = currentSeq.start;
-    video.playbackRate = 0.8;
-    video.play().catch(console.error);
+    video.playbackRate = HERO_PLAYBACK_RATE;
+    safePlay(video);
   };
 
   return (
@@ -76,17 +91,14 @@ export default React.memo(function HeroVideo() {
         autoPlay
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
         aria-hidden="true"
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
         onLoadedMetadata={handleLoadedMetadata}
       />
 
-      {/* 
-        Typography Overlay
-        Anchored to bottom-left, fully readable against the dark void.
-      */}
+      {/* Typography Overlay — anchored to bottom-left */}
       <div className="relative z-10 w-full max-w-5xl">
         <h1 className="font-serif font-medium text-[58px] tracking-[-0.05em] leading-[1.0] text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
           The weight of the <span className="italic font-light pr-1">invisible</span>.

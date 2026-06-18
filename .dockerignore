@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.husky
+*.md
+*.log
+.vscode
+.idea
+.DS_Store
+e2e
+*.mp4
+*.webm

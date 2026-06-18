@@ -1,7 +1,13 @@
 
 import { motion } from 'framer-motion';
 
-const POLICY_SECTIONS = [
+interface PolicySection {
+  num: string;
+  title: string;
+  content: string;
+}
+
+const POLICY_SECTIONS: readonly PolicySection[] = [
   {
     num: "01",
     title: "Data Telemetry & Collection",
@@ -70,7 +76,7 @@ export default function PrivacyPolicy() {
 
       {/* Footer */}
       <footer className="w-full mt-auto flex flex-col items-center justify-center pt-32 pb-12 px-6 bg-black border-t border-white/10">
-        <div className="w-full max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+        <nav className="w-full max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8" aria-label="Footer navigation">
           <div className="flex flex-col">
             <a href="#" className="font-sans font-light text-white/70 hover:text-white cursor-pointer transition-colors text-[13px] uppercase tracking-[0.15em]">Home</a>
           </div>
@@ -85,7 +91,7 @@ export default function PrivacyPolicy() {
               © {new Date().getFullYear()} Ashen
             </span>
           </div>
-        </div>
+        </nav>
       </footer>
     </div>
   );

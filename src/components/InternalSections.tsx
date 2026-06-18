@@ -1,61 +1,10 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import ScrollTextReveal from './ScrollTextReveal';
 import BreakdownSection from './BreakdownSection';
 import VoicesEvidence from './VoicesEvidence';
 import CarbonCalculator from './CarbonCalculator';
 import FinalSections from './FinalSections';
-
-const textContainerVariant = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.12 }
-  }
-};
-
-const textChildVariant = {
-  hidden: { opacity: 0, filter: "blur(10px)" },
-  visible: { 
-    opacity: 1, 
-    filter: "blur(0px)", 
-    transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1] as const } 
-  }
-};
-
-function ScrollTextReveal({ 
-  text, 
-  className, 
-  as = "div", 
-  wordsClassName = [] 
-}: { 
-  text: string; 
-  className?: string; 
-  as?: keyof typeof motion | string; 
-  wordsClassName?: string[]; 
-}) {
-  const words = text.split(" ");
-  const MotionComponent = motion[as as keyof typeof motion] as React.ElementType;
-
-  return (
-    <MotionComponent
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, margin: "-10%" }}
-      variants={textContainerVariant}
-      className={className}
-    >
-      {words.map((word, i) => (
-        <React.Fragment key={i}>
-          <motion.span 
-            variants={textChildVariant} 
-            className={`inline-block mr-[0.25em] ${wordsClassName[i] || ""}`}
-          >
-            {word}
-          </motion.span>
-        </React.Fragment>
-      ))}
-    </MotionComponent>
-  );
-}
 
 export default function InternalSections() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -99,6 +48,8 @@ export default function InternalSections() {
             <motion.img 
               src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=800&auto=format&fit=crop" 
               alt="Vast expanse of dark water" 
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 w-full h-[150%] object-cover transform-gpu -top-[25%]"
               style={{ y: backgroundY }}
             />
@@ -126,6 +77,8 @@ export default function InternalSections() {
             <motion.img 
               src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?q=80&w=800&auto=format&fit=crop" 
               alt="High voltage power grid" 
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 w-full h-[150%] object-cover transform-gpu -top-[25%]"
               style={{ y: backgroundY }}
             />
@@ -153,6 +106,8 @@ export default function InternalSections() {
             <motion.img 
               src="https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?q=80&w=800&auto=format&fit=crop" 
               alt="Pile of discarded electronic waste" 
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 w-full h-[150%] object-cover transform-gpu -top-[25%]"
               style={{ y: backgroundY }}
             />
@@ -177,7 +132,7 @@ export default function InternalSections() {
       {/* 6. VOICES & EVIDENCE */}
       <VoicesEvidence />
 
-      {/* INTERACTIVE CARBON MATRIX (Replaces The Terminal) */}
+      {/* INTERACTIVE CARBON MATRIX */}
       <CarbonCalculator />
 
       {/* FINAL SECTIONS: PREVENTION & FOOTER */}

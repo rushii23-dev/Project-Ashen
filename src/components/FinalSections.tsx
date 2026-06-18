@@ -2,7 +2,18 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { smoothScrollTo } from '../utils/smoothScroll';
 
-const PREVENTION_CARDS = [
+interface PreventionCard {
+  id: number;
+  problemTitle: string;
+  problemDesc: string;
+  actionText: string;
+  solutionTitle: string;
+  solutionDesc: string;
+  accent: string;
+  borderHover: string;
+}
+
+const PREVENTION_CARDS: readonly PreventionCard[] = [
   {
     id: 1,
     problemTitle: "The Daily Solo Commute",
@@ -35,7 +46,11 @@ const PREVENTION_CARDS = [
   }
 ];
 
-function InteractiveCard({ card }: { card: typeof PREVENTION_CARDS[0] }) {
+interface InteractiveCardProps {
+  card: PreventionCard;
+}
+
+function InteractiveCard({ card }: InteractiveCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
@@ -47,6 +62,7 @@ function InteractiveCard({ card }: { card: typeof PREVENTION_CARDS[0] }) {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         onClick={() => setIsFlipped(!isFlipped)}
         aria-pressed={isFlipped}
+        aria-label={`${card.problemTitle} — tap to ${isFlipped ? 'see the problem' : card.actionText}`}
       >
         {/* FRONT FACE (The Problem) */}
         <div 
@@ -56,7 +72,7 @@ function InteractiveCard({ card }: { card: typeof PREVENTION_CARDS[0] }) {
           <div className={`absolute inset-0 bg-gradient-to-b ${card.accent} rounded-[16px] pointer-events-none`} />
           <div className="relative z-10 flex flex-col">
             <span className="text-red-400 font-sans text-[12px] uppercase tracking-widest mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" /> Problem
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" aria-hidden="true" /> Problem
             </span>
             <h3 className="font-serif text-[32px] text-white leading-[1.1] mb-4">
               {card.problemTitle}
@@ -70,7 +86,7 @@ function InteractiveCard({ card }: { card: typeof PREVENTION_CARDS[0] }) {
             <span className="font-sans text-[14px] text-white group-hover:text-red-400 transition-colors">
               Tap to {card.actionText}
             </span>
-            <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white">
+            <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white" aria-hidden="true">
               →
             </div>
           </div>
@@ -87,7 +103,7 @@ function InteractiveCard({ card }: { card: typeof PREVENTION_CARDS[0] }) {
         >
           <div className="relative z-10 flex flex-col">
             <span className="text-green-600 font-sans text-[12px] uppercase tracking-widest mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-green-500" /> Solved
+              <span className="w-2 h-2 rounded-full bg-green-500" aria-hidden="true" /> Solved
             </span>
             <h3 className="font-serif text-[32px] text-black leading-[1.1] mb-4">
               {card.solutionTitle}
@@ -101,7 +117,7 @@ function InteractiveCard({ card }: { card: typeof PREVENTION_CARDS[0] }) {
             <span className="font-sans text-[14px] text-black font-medium">
               Healed
             </span>
-            <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white">
+            <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white" aria-hidden="true">
               ✓
             </div>
           </div>
@@ -142,7 +158,7 @@ export default function FinalSections() {
           Leave <em className="italic text-[#c0c0c0] font-light">nothing</em> behind.
         </h2>
 
-        {/* Secondary Echo & CTA (Delayed Animation) */}
+        {/* Secondary Echo & CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -156,17 +172,18 @@ export default function FinalSections() {
 
           <button 
             onClick={() => smoothScrollTo('carbon-calculator')}
+            aria-label="Scroll to the carbon calculator"
             className="px-8 py-4 rounded-full bg-white text-black font-medium text-[15px] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2"
           >
             Measure Your Shadow
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ml-1">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ml-1" aria-hidden="true">
               <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
         </motion.div>
         
         {/* Minimalist Footer Grid */}
-        <div className="w-full max-w-[1440px] mx-auto border-t border-white/10 mt-32 md:mt-48 pt-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <nav className="w-full max-w-[1440px] mx-auto border-t border-white/10 mt-32 md:mt-48 pt-8 grid grid-cols-2 md:grid-cols-4 gap-8" aria-label="Footer navigation">
           <div className="flex flex-col">
             <a href="#" className="font-sans font-light text-white/70 hover:text-white cursor-pointer transition-colors text-[13px] uppercase tracking-[0.15em]">Home</a>
           </div>
@@ -174,14 +191,14 @@ export default function FinalSections() {
             <a href="#manifesto" className="font-sans font-light text-white/70 hover:text-white cursor-pointer transition-colors text-[13px] uppercase tracking-[0.15em]">Manifesto</a>
           </div>
           <div className="flex flex-col">
-            <span className="font-sans font-light text-white/70 hover:text-white cursor-pointer transition-colors text-[13px] uppercase tracking-[0.15em]">Privacy Policy</span>
+            <a href="#privacy" className="font-sans font-light text-white/70 hover:text-white cursor-pointer transition-colors text-[13px] uppercase tracking-[0.15em]">Privacy Policy</a>
           </div>
           <div className="flex flex-col md:items-end">
             <span className="font-sans font-light text-white/30 text-[13px] uppercase tracking-[0.15em]">
               © {new Date().getFullYear()} Ashen
             </span>
           </div>
-        </div>
+        </nav>
       </footer>
     </div>
   );

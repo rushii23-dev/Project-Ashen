@@ -1,26 +1,33 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
+import ScrollTextReveal from './ScrollTextReveal';
 
-// Reusable VideoCard Component with complex interaction logic
+// --- VideoCard Component ---
+
+interface VideoCardProps {
+  /** URL to the video file. */
+  src: string;
+  /** Display name of the speaker. */
+  name: string;
+  /** Professional title or subtitle. */
+  title: string;
+  /** CSS `object-position` override for the video element. */
+  objectPosition?: string;
+}
+
 const VideoCard = ({ 
   src, 
   name, 
   title,
   objectPosition = "object-center"
-}: { 
-  src: string; 
-  name: string; 
-  title: string;
-  objectPosition?: string;
-}) => {
+}: VideoCardProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleFocusEnter = () => {
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.muted = false;
-      // Ensure playback in case autoplay policies block it initially
-      videoRef.current.play().catch(() => {});
+      videoRef.current.play().catch(() => { /* autoplay blocked by browser policy */ });
     }
   };
 
@@ -47,6 +54,7 @@ const VideoCard = ({
         loop
         muted
         playsInline
+        preload="metadata"
         className={`absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-1000 ease-[0.16,1,0.3,1] group-hover:scale-110 ${objectPosition}`}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 pointer-events-none"></div>
@@ -63,74 +71,18 @@ const VideoCard = ({
   );
 };
 
-const textContainerVariant = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.12 }
-  }
-};
+// --- QuoteCard Component ---
 
-const textChildVariant = {
-  hidden: { opacity: 0, filter: "blur(10px)" },
-  visible: { 
-    opacity: 1, 
-    filter: "blur(0px)", 
-    transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1] as const } 
-  }
-};
-
-function ScrollTextReveal({ 
-  text, 
-  className, 
-  as = "div", 
-  wordsClassName = [],
-  once = false
-}: { 
-  text: string; 
-  className?: string; 
-  as?: keyof typeof motion | string; 
-  wordsClassName?: string[];
-  once?: boolean;
-}) {
-  const lines = text.split("\n");
-  const MotionComponent = motion[as as keyof typeof motion] as React.ElementType;
-
-  let wordIndexCounter = 0;
-
-  return (
-    <MotionComponent
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: once, margin: "-10%" }}
-      variants={textContainerVariant}
-      className={className}
-    >
-      {lines.map((line, lineIndex) => {
-        const words = line.trim().split(/\s+/);
-        return (
-          <React.Fragment key={lineIndex}>
-            {words.map((word, i) => {
-              if (!word) return null;
-              const currentIndex = wordIndexCounter++;
-              return (
-                <motion.span 
-                  key={i}
-                  variants={textChildVariant} 
-                  className={`inline-block mr-[0.25em] ${wordsClassName[currentIndex] || ""}`}
-                >
-                  {word}
-                </motion.span>
-              );
-            })}
-            {lineIndex < lines.length - 1 && <br className="hidden md:block" />}
-          </React.Fragment>
-        );
-      })}
-    </MotionComponent>
-  );
+interface QuoteCardProps {
+  /** Category tag displayed above the quote. */
+  tag: string;
+  /** The quote text to display. */
+  quote: string;
+  /** Attribution source for the quote. */
+  author: string;
 }
 
-const QuoteCard = ({ tag, quote, author }: { tag: string; quote: string; author: string }) => {
+const QuoteCard = ({ tag, quote, author }: QuoteCardProps) => {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 40 }}
@@ -166,7 +118,7 @@ const QuoteCard = ({ tag, quote, author }: { tag: string; quote: string; author:
         transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
         className="font-sans font-light text-[12px] uppercase tracking-[0.05em] text-[#999999] mt-6 relative z-10 flex items-center gap-2"
       >
-        <span className="w-4 h-[1px] bg-[#999999]"></span>
+        <span className="w-4 h-[1px] bg-[#999999]" aria-hidden="true"></span>
         {author}
       </motion.div>
     </motion.div>

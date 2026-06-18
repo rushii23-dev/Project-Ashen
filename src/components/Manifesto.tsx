@@ -1,7 +1,13 @@
 
 import { motion } from 'framer-motion';
 
-const screens = [
+interface ManifestoScreen {
+  kicker: string;
+  statement: string;
+  subtext: string;
+}
+
+const screens: readonly ManifestoScreen[] = [
   {
     kicker: "WE BELIEVE IN",
     statement: "We refuse to let the invisible remain unaccountable.",
@@ -65,11 +71,11 @@ export default function Manifesto() {
         </div>
 
         {/* Footer Links */}
-        <div className="w-full max-w-[1440px] mx-auto border-t border-white/10 pt-8 pb-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <nav className="w-full max-w-[1440px] mx-auto border-t border-white/10 pt-8 pb-12 grid grid-cols-2 md:grid-cols-4 gap-8" aria-label="Footer navigation">
           <div className="flex flex-col">
-            <button onClick={() => window.location.href='/'} className="font-sans font-light text-white/70 hover:text-white transition-colors text-[13px] uppercase tracking-[0.15em] text-left">
+            <a href="#" className="font-sans font-light text-white/70 hover:text-white transition-colors text-[13px] uppercase tracking-[0.15em]">
               Home
-            </button>
+            </a>
           </div>
           <div className="flex flex-col">
             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth'})} className="font-sans font-light text-white/70 hover:text-white transition-colors text-[13px] uppercase tracking-[0.15em] text-left">
@@ -77,16 +83,16 @@ export default function Manifesto() {
             </button>
           </div>
           <div className="flex flex-col">
-            <span className="font-sans font-light text-white/70 hover:text-white cursor-pointer transition-colors text-[13px] uppercase tracking-[0.15em]">
+            <a href="#privacy" className="font-sans font-light text-white/70 hover:text-white transition-colors text-[13px] uppercase tracking-[0.15em]">
               Privacy Policy
-            </span>
+            </a>
           </div>
           <div className="flex flex-col md:items-end">
             <span className="font-sans font-light text-white/30 text-[13px] uppercase tracking-[0.15em]">
               © {new Date().getFullYear()} Ashen
             </span>
           </div>
-        </div>
+        </nav>
       </section>
     </div>
   );

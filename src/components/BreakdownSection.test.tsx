@@ -1,17 +1,6 @@
-
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import BreakdownSection from './BreakdownSection';
-
-beforeAll(() => {
-  window.IntersectionObserver = class IntersectionObserver {
-    constructor() {}
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  } as unknown as typeof IntersectionObserver;
-  window.HTMLMediaElement.prototype.play = () => Promise.resolve();
-});
 
 describe('BreakdownSection', () => {
   it('renders section title', () => {
